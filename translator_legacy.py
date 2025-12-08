@@ -43,7 +43,7 @@ def translate_text(text):  # 用来调用API翻译传入的文本
         raise  # ✅ 重新抛出异常，触发 tenacity 重试机制
 
 def main():
-    df = pd.read_csv("papers.csv")
+    df = pd.read_csv("iccv2025.csv")
     
     # 修改1：检查 result.csv 是否存在，加载已翻译的 ID
     translated_ids = set()
@@ -61,21 +61,22 @@ def main():
             f.write("id,cn_abstract\n")
 
     # 修改2：添加 tqdm 进度条
+    # 修改2：添加 tqdm 进度条
     for index, row in tqdm(df.iterrows(), total=len(df), desc="翻译进度", unit="篇"):
+        row_num = index + 1  # 行号（从1开始，对应CSV实际行）
         # 修改3：跳过已翻译的论文（断点续传）
-        if row['id'] in translated_ids:
+        if row_num in translated_ids:
             continue
-        
+
         abstract = row['abstract']
-        print(f"Translating paper {index + 1}/{len(df)}: {row['id']}...")
+        print(f"Translating paper {index + 1}/{len(df)}: [{row_num}]...")  # 打印行号
 
         cn_abstract = translate_text(abstract)
 
         # 写入结果，处理特殊字符
         with open("result.csv", "a", encoding="utf-8") as f:
             safe_text = cn_abstract.replace('"', '""').replace('\n', ' ')
-            f.write(f'{row["id"]},"{safe_text}"\n')
-        
+            f.write(f"{row_num},\"{safe_text}\"\n")  # 写入行号
         time.sleep(3)
     
     # 修改4：添加完成提示
