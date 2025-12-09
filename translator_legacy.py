@@ -61,7 +61,6 @@ def main():
             f.write("id,cn_abstract\n")
 
     # 修改2：添加 tqdm 进度条
-    # 修改2：添加 tqdm 进度条
     for index, row in tqdm(df.iterrows(), total=len(df), desc="翻译进度", unit="篇"):
         row_num = index + 1  # 行号（从1开始，对应CSV实际行）
         # 修改3：跳过已翻译的论文（断点续传）
