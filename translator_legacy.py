@@ -8,7 +8,7 @@ from tqdm import tqdm  # ✅ 这样才能用 tqdm(...)
 from dotenv import load_dotenv
 load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
-#HF_TOKEN = "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"
+
 
 client = OpenAI(
     api_key=HF_TOKEN,

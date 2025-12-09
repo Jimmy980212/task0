@@ -15,3 +15,7 @@ python-dotenv
 
 # Hugging Face 官方库，用于与 Hub 交互
 huggingface-hub
+
+openai
+
+tenacity
