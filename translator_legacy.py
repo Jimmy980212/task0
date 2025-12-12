@@ -58,7 +58,7 @@ def main():
     # 如果是第一次运行，写入表头
     if not translated_ids:
         with open("result.csv", "w", encoding="utf-8") as f:
-            f.write("id,cn_abstract\n")
+            f.write("id,cn_title,cn_abstract\n")
 
     # 修改2：添加 tqdm 进度条
     for index, row in tqdm(df.iterrows(), total=len(df), desc="翻译进度", unit="篇"):
@@ -66,16 +66,17 @@ def main():
         # 修改3：跳过已翻译的论文（断点续传）
         if row_num in translated_ids:
             continue
-
+        title = row['title']
         abstract = row['abstract']
         print(f"Translating paper {index + 1}/{len(df)}: [{row_num}]...")  # 打印行号
-
+        cn_title = translate_text(title)
         cn_abstract = translate_text(abstract)
 
         # 写入结果，处理特殊字符
         with open("result.csv", "a", encoding="utf-8") as f:
+            safe_title = cn_title.replace('"', '""').replace('\n', ' ')
             safe_text = cn_abstract.replace('"', '""').replace('\n', ' ')
-            f.write(f"{row_num},\"{safe_text}\"\n")  # 写入行号
+            f.write(f"{row_num},\"{safe_title}\",\"{safe_text}\"\n")  # 写入行号
         time.sleep(3)
     
     # 修改4：添加完成提示
